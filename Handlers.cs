@@ -5,18 +5,19 @@ namespace IHI.Server.Plugins.Cecer1.StandardOut
 {
     internal class Handlers
     {
-        Plugin fOwner;
-        internal Handlers(Plugin Owner)
+        private readonly Plugin _plugin;
+
+        internal Handlers(Plugin owner)
         {
-            this.fOwner = Owner;
+            _plugin = owner;
         }
 
-        internal void PAGE_Index(HttpListenerContext Context)
+        internal void PageIndex(HttpListenerContext context)
         {
-            if (Context.Request.IsLocal)
+            if (context.Request.IsLocal)
             {
-                CoreManager.GetCore().GetWebAdminManager().SendResponse(Context.Response, this.fOwner.GetName(),
-@"<!DOCTYPE html>
+                WebAdminManager.SendResponse(context.Response, _plugin.GetName(),
+                                             @"<!DOCTYPE html>
 <html>
 	<head>
 		<title>IHI Web Admin Example</title>
@@ -64,64 +65,67 @@ namespace IHI.Server.Plugins.Cecer1.StandardOut
 </html>");
             }
         }
-        internal void PAGE_Message(HttpListenerContext Context)
-        {
-            if (Context.Request.IsLocal)
-            {
-                string Level = Context.Request.QueryString["level"];
-                string Data = Context.Request.QueryString["data"];
-                byte L = 0;
 
-                if (byte.TryParse(Level, out L))
+        internal void PageMessage(HttpListenerContext context)
+        {
+            if (!context.Request.IsLocal) return;
+            var level = context.Request.QueryString["level"];
+            var data = context.Request.QueryString["data"];
+            byte levelByte;
+
+            if (byte.TryParse(level, out levelByte))
+            {
+                switch (levelByte)
                 {
-                    switch (L)
-                    {
-                        case 0:
-                            CoreManager.GetCore().GetStandardOut().PrintDebug(Data);
-                            break;
-                        case 1:
-                            CoreManager.GetCore().GetStandardOut().PrintNotice(Data);
-                            break;
-                        case 2:
-                            CoreManager.GetCore().GetStandardOut().PrintImportant(Data);
-                            break;
-                        case 3:
-                            CoreManager.GetCore().GetStandardOut().PrintWarning(Data);
-                            break;
-                        case 4:
-                            CoreManager.GetCore().GetStandardOut().PrintError(Data);
-                            break;
-                        default:
-                            {
-                                CoreManager.GetCore().GetWebAdminManager().SendResponse(Context.Response, this.fOwner.GetName(), "FAILURE");
-                                return;
-                            }
-                    }
-                    CoreManager.GetCore().GetWebAdminManager().SendResponse(Context.Response, this.fOwner.GetName(), "SUCCESS");
-                    return;
+                    case 0:
+                        CoreManager.GetServerCore().GetStandardOut().PrintDebug(data);
+                        break;
+                    case 1:
+                        CoreManager.GetServerCore().GetStandardOut().PrintNotice(data);
+                        break;
+                    case 2:
+                        CoreManager.GetServerCore().GetStandardOut().PrintImportant(data);
+                        break;
+                    case 3:
+                        CoreManager.GetServerCore().GetStandardOut().PrintWarning(data);
+                        break;
+                    case 4:
+                        CoreManager.GetServerCore().GetStandardOut().PrintError(data);
+                        break;
+                    default:
+                        {
+                            WebAdminManager.SendResponse(context.Response,
+                                                         _plugin.GetName(),
+                                                         "FAILURE");
+                            return;
+                        }
                 }
-                CoreManager.GetCore().GetWebAdminManager().SendResponse(Context.Response, this.fOwner.GetName(), "FAILURE");
+                WebAdminManager.SendResponse(context.Response, _plugin.GetName(),
+                                             "SUCCESS");
+                return;
             }
+            WebAdminManager.SendResponse(context.Response, _plugin.GetName(),
+                                         "FAILURE");
         }
 
-        internal void PAGE_Update(HttpListenerContext Context)
+        internal void PageUpdate(HttpListenerContext context)
         {
-            if (Context.Request.IsLocal)
-            {
-                string Level = Context.Request.QueryString["level"];
-                byte L = 0;
+            if (!context.Request.IsLocal) return;
+            var level = context.Request.QueryString["level"];
+            byte levelByte;
 
-                if (byte.TryParse(Level, out L))
+            if (byte.TryParse(level, out levelByte))
+            {
+                if (levelByte <= 4)
                 {
-                    if(L <= 4)
-                    {
-                        CoreManager.GetCore().GetStandardOut().SetImportance((StandardOutImportance)L);
-                        CoreManager.GetCore().GetWebAdminManager().SendResponse(Context.Response, this.fOwner.GetName(), "SUCCESS");
-                        return;
-                    }
+                    CoreManager.GetServerCore().GetStandardOut().SetImportance((StandardOutImportance) levelByte);
+                    WebAdminManager.SendResponse(context.Response, _plugin.GetName(),
+                                                 "SUCCESS");
+                    return;
                 }
-                CoreManager.GetCore().GetWebAdminManager().SendResponse(Context.Response, this.fOwner.GetName(), "FAILURE");
             }
+            WebAdminManager.SendResponse(context.Response, _plugin.GetName(),
+                                         "FAILURE");
         }
     }
 }
