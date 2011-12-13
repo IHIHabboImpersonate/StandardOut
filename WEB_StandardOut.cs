@@ -1,4 +1,6 @@
-﻿namespace IHI.Server.Plugins.Cecer1.StandardOut
+﻿using IHI.Server.WebAdmin;
+
+namespace IHI.Server.Plugins.Cecer1.StandardOut
 {
     public class WEB_StandardOut : Plugin
     {
@@ -7,7 +9,7 @@
         public override void Start()
         {
             _handlers = new Handlers(this);
-            var webAdminManager = CoreManager.GetServerCore().GetWebAdminManager();
+            WebAdminManager webAdminManager = CoreManager.ServerCore.GetWebAdminManager();
 
             webAdminManager.AddPathHandler("/admin/stdout", _handlers.PageIndex);
             webAdminManager.AddPathHandler("/admin/stdout/send", _handlers.PageMessage);

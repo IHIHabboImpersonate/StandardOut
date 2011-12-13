@@ -69,8 +69,8 @@ namespace IHI.Server.Plugins.Cecer1.StandardOut
         internal void PageMessage(HttpListenerContext context)
         {
             if (!context.Request.IsLocal) return;
-            var level = context.Request.QueryString["level"];
-            var data = context.Request.QueryString["data"];
+            string level = context.Request.QueryString["level"];
+            string data = context.Request.QueryString["data"];
             byte levelByte;
 
             if (byte.TryParse(level, out levelByte))
@@ -78,19 +78,19 @@ namespace IHI.Server.Plugins.Cecer1.StandardOut
                 switch (levelByte)
                 {
                     case 0:
-                        CoreManager.GetServerCore().GetStandardOut().PrintDebug(data);
+                        CoreManager.ServerCore.GetStandardOut().PrintDebug(data);
                         break;
                     case 1:
-                        CoreManager.GetServerCore().GetStandardOut().PrintNotice(data);
+                        CoreManager.ServerCore.GetStandardOut().PrintNotice(data);
                         break;
                     case 2:
-                        CoreManager.GetServerCore().GetStandardOut().PrintImportant(data);
+                        CoreManager.ServerCore.GetStandardOut().PrintImportant(data);
                         break;
                     case 3:
-                        CoreManager.GetServerCore().GetStandardOut().PrintWarning(data);
+                        CoreManager.ServerCore.GetStandardOut().PrintWarning(data);
                         break;
                     case 4:
-                        CoreManager.GetServerCore().GetStandardOut().PrintError(data);
+                        CoreManager.ServerCore.GetStandardOut().PrintError(data);
                         break;
                     default:
                         {
@@ -111,14 +111,14 @@ namespace IHI.Server.Plugins.Cecer1.StandardOut
         internal void PageUpdate(HttpListenerContext context)
         {
             if (!context.Request.IsLocal) return;
-            var level = context.Request.QueryString["level"];
+            string level = context.Request.QueryString["level"];
             byte levelByte;
 
             if (byte.TryParse(level, out levelByte))
             {
                 if (levelByte <= 4)
                 {
-                    CoreManager.GetServerCore().GetStandardOut().SetImportance((StandardOutImportance) levelByte);
+                    CoreManager.ServerCore.GetStandardOut().SetImportance((StandardOutImportance) levelByte);
                     WebAdminManager.SendResponse(context.Response, _plugin.GetName(),
                                                  "SUCCESS");
                     return;
