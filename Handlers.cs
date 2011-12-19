@@ -16,7 +16,7 @@ namespace IHI.Server.Plugins.Cecer1.StandardOut
         {
             if (context.Request.IsLocal)
             {
-                WebAdminManager.SendResponse(context.Response, _plugin.GetName(),
+                WebAdminManager.SendResponse(context.Response, _plugin.Name,
                                              @"<!DOCTYPE html>
 <html>
 	<head>
@@ -95,16 +95,16 @@ namespace IHI.Server.Plugins.Cecer1.StandardOut
                     default:
                         {
                             WebAdminManager.SendResponse(context.Response,
-                                                         _plugin.GetName(),
+                                                         _plugin.Name,
                                                          "FAILURE");
                             return;
                         }
                 }
-                WebAdminManager.SendResponse(context.Response, _plugin.GetName(),
+                WebAdminManager.SendResponse(context.Response, _plugin.Name,
                                              "SUCCESS");
                 return;
             }
-            WebAdminManager.SendResponse(context.Response, _plugin.GetName(),
+            WebAdminManager.SendResponse(context.Response, _plugin.Name,
                                          "FAILURE");
         }
 
@@ -119,12 +119,12 @@ namespace IHI.Server.Plugins.Cecer1.StandardOut
                 if (levelByte <= 4)
                 {
                     CoreManager.ServerCore.GetStandardOut().SetImportance((StandardOutImportance) levelByte);
-                    WebAdminManager.SendResponse(context.Response, _plugin.GetName(),
+                    WebAdminManager.SendResponse(context.Response, _plugin.Name,
                                                  "SUCCESS");
                     return;
                 }
             }
-            WebAdminManager.SendResponse(context.Response, _plugin.GetName(),
+            WebAdminManager.SendResponse(context.Response, _plugin.Name,
                                          "FAILURE");
         }
     }
