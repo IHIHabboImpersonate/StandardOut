@@ -23,9 +23,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("StandardOut")]
 [assembly: AssemblyDescription("Provides a WebAdmin page for testing Standard Out.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Bluedot")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("StandardOut")]
-[assembly: AssemblyCopyright("Copyright © Bluedot 2011")]
+[assembly: AssemblyCopyright("Copyright © Chris Chenery 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
